@@ -32,6 +32,7 @@ var _ = Describe("sealer apply", func() {
 		rawClusterFilePath := apply.GetRawClusterFilePath()
 		rawCluster := apply.LoadClusterFileFromDisk(rawClusterFilePath)
 		rawCluster.Spec.Image = settings.TestImageName
+		apply.CheckDockerAndSwapOff()
 		BeforeEach(func() {
 			if rawCluster.Spec.Image != settings.TestImageName {
 				//rawClusterImageName updated to customImageName

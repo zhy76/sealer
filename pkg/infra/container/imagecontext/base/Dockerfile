@@ -19,7 +19,8 @@ COPY 10-network-security.conf /etc/sysctl.d/
 ARG PASSWORD="Seadent123"
 
 RUN echo "Installing Packages ..." \
-    && sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list \
+    # && sed -i "s/archive.ubuntu.com/mirrors.aliyun.com/g" /etc/apt/sources.list \
+    && sed -i -e 's/archive.ubuntu.com\|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list \
     && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       systemd \
@@ -43,7 +44,6 @@ RUN echo "Installing Packages ..." \
     && rm -f /lib/systemd/system/sockets.target.wants/*udev* \
     && rm -f /lib/systemd/system/sockets.target.wants/*initctl* \
     && rm -f /lib/systemd/system/basic.target.wants/* \
-    && rm -rf /var/lib/sealer/* \
     && echo "ReadKMsg=no" >> /etc/systemd/journald.conf \
     && ln -s "$(which systemd)" /sbin/init
 

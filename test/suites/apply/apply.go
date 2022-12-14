@@ -294,7 +294,13 @@ func WaitAllNodeRunningBySSH(s ssh.Interface, masterIP net.IP) {
 		if err != nil {
 			return err
 		}
+		fmt.Println(result)
 		if strings.Contains(result, "NotReady") {
+			resultPod, err := s.CmdToString(masterIP, "kubectl get pod -A", "")
+			if err != nil {
+				return err
+			}
+			fmt.Println(resultPod)
 			return fmt.Errorf("node not ready: \n %s", result)
 		}
 		return nil

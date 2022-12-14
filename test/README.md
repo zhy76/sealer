@@ -14,7 +14,7 @@ To run a single test or set of tests, you'll need the [Ginkgo](https://github.co
 machine:
 
 ```console
-go get github.com/onsi/ginkgo/ginkgo
+go install github.com/onsi/ginkgo/ginkgo@v1.16.2
 ```
 
 To install Sealer and prepare the test environment:

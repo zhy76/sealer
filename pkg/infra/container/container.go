@@ -33,16 +33,18 @@ import (
 )
 
 const (
-	CONTAINER           = "CONTAINER"
-	DockerHost          = "/var/run/docker.sock"
-	DefaultPassword     = "Seadent123"
-	MASTER              = "master"
-	NODE                = "node"
-	ChangePasswordCmd   = "echo root:%s | chpasswd" // #nosec
-	RoleLabel           = "sealer-io-role"
-	RoleLabelMaster     = "sealer-io-role-is-master"
-	NetworkName         = "sealer-network"
-	ImageName           = "registry.cn-qingdao.aliyuncs.com/sealer-io/sealer-base-image:latest"
+	CONTAINER         = "CONTAINER"
+	DockerHost        = "/var/run/docker.sock"
+	DefaultPassword   = "Seadent123"
+	MASTER            = "master"
+	NODE              = "node"
+	ChangePasswordCmd = "echo root:%s | chpasswd" // #nosec
+	RoleLabel         = "sealer-io-role"
+	RoleLabelMaster   = "sealer-io-role-is-master"
+	NetworkName       = "sealer-network"
+	// ImageName         = "registry.cn-qingdao.aliyuncs.com/sealer-io/sealer-base-image:latest"
+	ImageName = "zhy76/sealer-base-image:v1"
+	// ImageName           = "base:v1"
 	SealerImageRootPath = "/var/lib/sealer"
 )
 

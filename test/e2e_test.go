@@ -57,6 +57,14 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 	"TimeFormat":"2006-01-02 15:04:05"}`
 	err = os.WriteFile(filepath.Join(home, ".sealer.json"), []byte(logcfg), os.ModePerm)
 	Expect(err).NotTo(HaveOccurred())
+	// check the whether the sealer mount dir exist, if not, make the dir
+	_dir := "/var/lib/sealer"
+	exist, err := testhelper.PathExists(_dir)
+	Expect(err).NotTo(HaveOccurred())
+	if !exist {
+		err := os.Mkdir(_dir, os.ModePerm)
+		Expect(err).NotTo(HaveOccurred())
+	}
 	cmd := fmt.Sprintf("rm -rf %s/*", common.DefaultSealerDataDir)
 	_, err = exe.RunSimpleCmd(cmd)
 	Expect(err).NotTo(HaveOccurred())
