@@ -20,10 +20,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/onsi/gomega"
-
 	"github.com/sealerio/sealer/test/testhelper/settings"
 	"github.com/sealerio/sealer/utils/exec"
+
+	"github.com/onsi/gomega"
 )
 
 func GetFixtures() string {
