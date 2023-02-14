@@ -19,16 +19,16 @@ import (
 	"io"
 	"path/filepath"
 
-	"github.com/onsi/ginkgo"
-	"github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
-	"github.com/onsi/gomega/gexec"
-
 	"github.com/sealerio/sealer/common"
 	"github.com/sealerio/sealer/test/suites/build"
 	"github.com/sealerio/sealer/test/testhelper"
 	"github.com/sealerio/sealer/test/testhelper/settings"
 	"github.com/sealerio/sealer/utils/exec"
+
+	"github.com/onsi/ginkgo"
+	"github.com/onsi/gomega"
+	"github.com/onsi/gomega/gbytes"
+	"github.com/onsi/gomega/gexec"
 )
 
 func DoImageOps(action, imageName string) {
