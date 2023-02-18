@@ -13,7 +13,7 @@ permissions:
 jobs:
   build:
     name: test
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: ${{ (github.event.issue.pull_request && (github.event.comment.body == '/test all' || github.event.comment.body == '/test build')) || github.event_name == 'push' }}
     env:
       GO111MODULE: on
