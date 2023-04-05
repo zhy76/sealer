@@ -25,7 +25,8 @@ import (
 	"github.com/onsi/gomega/gexec"
 )
 
-func DoImageOps(action, imageName string) {
+// remote execute sealer image ops
+func RemoteDoImageOps(sshClient *testhelper.SSHClient, action, imageName string) {
 	cmd := ""
 	switch action {
 	case "pull":
@@ -39,12 +40,19 @@ func DoImageOps(action, imageName string) {
 	case "inspect":
 		cmd = fmt.Sprintf("%s inspect %s -d", settings.DefaultSealerBin, imageName)
 	}
-
-	testhelper.RunCmdAndCheckResult(cmd, 0)
+	gomega.Eventually(func() bool {
+		err := sshClient.SSH.CmdAsync(sshClient.RemoteHostIP, nil, cmd)
+		return err == nil
+	}, settings.MaxWaiteTime).Should(gomega.BeTrue())
 }
-func TagImages(oldName, newName string) {
+
+// remote excute sealer tag
+func RemoteTagImages(sshClient *testhelper.SSHClient, oldName, newName string) {
 	cmd := fmt.Sprintf("%s tag %s %s", settings.DefaultSealerBin, oldName, newName)
-	testhelper.RunCmdAndCheckResult(cmd, 0)
+	gomega.Eventually(func() bool {
+		err := sshClient.SSH.CmdAsync(sshClient.RemoteHostIP, nil, cmd)
+		return err == nil
+	}, settings.MaxWaiteTime).Should(gomega.BeTrue())
 }
 
 func CheckLoginResult(registryURL, username, passwd string, result bool) {

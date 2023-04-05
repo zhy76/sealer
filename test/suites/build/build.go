@@ -19,6 +19,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/onsi/gomega"
+	"github.com/sealerio/sealer/test/testhelper"
 	"github.com/sealerio/sealer/test/testhelper/settings"
 	"github.com/sealerio/sealer/utils/exec"
 )
@@ -146,8 +148,17 @@ func CheckIsMultiArchImageExist(imageName string) bool {
 	return err == nil
 }
 
-func CheckIsImageExist(imageName string) bool {
+// remote check is image exist
+func RemoteCheckIsImageExist(sshClient *testhelper.SSHClient, imageName string) bool {
 	cmd := fmt.Sprintf("%s inspect %s", settings.DefaultSealerBin, imageName)
-	_, err := exec.RunSimpleCmd(cmd)
+	err := sshClient.SSH.CmdAsync(sshClient.RemoteHostIP, nil, cmd)
 	return err == nil
+}
+
+// remote excute sealer build
+func RemoteSealerBuild(sshClient *testhelper.SSHClient, cmd string) {
+	gomega.Eventually(func() bool {
+		err := sshClient.SSH.CmdAsync(sshClient.RemoteHostIP, nil, cmd)
+		return err == nil
+	}, settings.MaxWaiteTime).Should(gomega.BeTrue())
 }
