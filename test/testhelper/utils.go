@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/sealerio/sealer/common"
+	"github.com/sealerio/sealer/pkg/infra/container"
 	"github.com/sealerio/sealer/test/testhelper/settings"
 	v1 "github.com/sealerio/sealer/types/api/v1"
 	"github.com/sealerio/sealer/utils/exec"
@@ -129,6 +130,29 @@ func NewSSHClientByCluster(cluster *v1.Cluster) *SSHClient {
 	}
 }
 
+// Create a SSHClient by container ip
+func NewSSHClientByIP(ip net.IP) *SSHClient {
+	address, err := utilsnet.GetLocalHostAddresses()
+	if err != nil {
+		logrus.Warnf("failed to get local address, %v", err)
+	}
+	sshClient := &ssh.SSH{
+		User:         common.ROOT,
+		LocalAddress: address,
+		AlsoToStdout: true,
+		Password:     container.DefaultPassword,
+		Fs:           fs.NewFilesystem(),
+	}
+	err = ssh.WaitSSHReady(sshClient, 6, ip)
+	CheckErr(err)
+	CheckNotNil(sshClient)
+
+	return &SSHClient{
+		SSH:          sshClient,
+		RemoteHostIP: ip,
+	}
+}
+
 func IsFileExist(filename string) bool {
 	_, err := os.Stat(filename)
 	return !os.IsNotExist(err)
@@ -170,10 +194,10 @@ func GetRemoteFileData(sshClient *SSHClient, filePath string) []byte {
 	return result
 }
 
-// DeleteFileLocally delete file for cloud apply
-func DeleteFileLocally(filePath string) {
-	cmd := fmt.Sprintf("sudo -E rm -rf %s", filePath)
-	_, err := exec.RunSimpleCmd(cmd)
+// DeleteFileRemotely delete remote file
+func DeleteFileRemotely(sshClient *SSHClient, filePath string) {
+	cmd := fmt.Sprintf("rm -rf %s", filePath)
+	err := sshClient.SSH.CmdAsync(sshClient.RemoteHostIP, nil, cmd)
 	CheckErr(err)
 }
 

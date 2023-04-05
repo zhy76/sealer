@@ -27,7 +27,6 @@ import (
 )
 
 var _ = Describe("sealer run", func() {
-
 	Context("run on container", func() {
 		var tempFile string
 		apply.CheckDockerAndSwapOff()

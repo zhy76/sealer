@@ -16,27 +16,27 @@ package registry
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sealerio/sealer/test/testhelper"
 	"github.com/sealerio/sealer/test/testhelper/settings"
 
 	"github.com/onsi/gomega"
-	"github.com/onsi/gomega/gbytes"
-	"github.com/onsi/gomega/gexec"
 )
 
-func Login() {
-	sess, err := testhelper.Start(fmt.Sprintf("%s login %s -u %s -p %s", settings.DefaultSealerBin, settings.RegistryURL,
+func RemoteLogin(sshClient *testhelper.SSHClient) {
+	cmd := fmt.Sprintf("%s login %s -u %s -p %s", settings.DefaultSealerBin, settings.RegistryURL,
 		settings.RegistryUsername,
-		settings.RegistryPasswd))
-
+		settings.RegistryPasswd)
+	result, err := sshClient.SSH.CmdToString(sshClient.RemoteHostIP, nil, cmd, "")
 	gomega.Expect(err).NotTo(gomega.HaveOccurred())
-	gomega.Eventually(sess).Should(gbytes.Say(fmt.Sprintln("Login Succeeded!")))
-	gomega.Eventually(sess, settings.MaxWaiteTime).Should(gexec.Exit(0))
+	testhelper.CheckBeTrue(func() bool {
+		return strings.Contains(result, "Login Succeeded!")
+	}())
 }
 
-func Logout() {
-	testhelper.DeleteFileLocally(DefaultRegistryAuthConfigDir())
+func RemoteLogout(sshClient *testhelper.SSHClient) {
+	testhelper.DeleteFileRemotely(sshClient, DefaultRegistryAuthConfigDir())
 }
 
 // DefaultRegistryAuthConfigDir using root privilege to run sealer cmd at e2e test
